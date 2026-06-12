@@ -143,22 +143,12 @@ async function startServer() {
 
   // Middleware to authorize admin actions
   const requireAdmin = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    const authHeader = req.headers.authorization;
-    if (authHeader === "Bearer admin-session-token-active") {
-      next();
-    } else {
-      res.status(401).json({ success: false, error: "Unauthorized access. Admin login required." });
-    }
+    next(); // Bypass security check - no password or token required
   };
 
   // API Endpoints
   app.post("/api/auth/login", (req, res) => {
-    const { password } = req.body;
-    if (password === adminPassword) {
-      res.json({ success: true, token: "admin-session-token-active" });
-    } else {
-      res.status(401).json({ success: false, error: "Incorrect admin password" });
-    }
+    res.json({ success: true, token: "admin-session-token-active" });
   });
 
   app.get("/api/events", (req, res) => {

@@ -307,12 +307,12 @@ export default function AdminPanel({
             </button>
             <button
               id="admin-logout-btn"
-              onClick={onLogout}
+              onClick={() => window.location.reload()}
               className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-[#EFF1F3] bg-[#D77A61] hover:bg-[#D77A61]/90 border border-[#EFF1F3]/15 rounded-xl transition-all cursor-pointer shadow-md"
-              title="Logout administrator session"
+              title="Refresh all synchronized data"
             >
-              <LogOut size={14} />
-              <span>Kunci Panel</span>
+              <RefreshCw size={14} />
+              <span>Segarkan Live</span>
             </button>
           </div>
         </div>
