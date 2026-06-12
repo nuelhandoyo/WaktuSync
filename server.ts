@@ -18,7 +18,8 @@ interface Event {
   color: string;
 }
 
-const DB_PATH = path.join(process.cwd(), "events.json");
+const DATA_DIR = path.join(process.cwd(), "data");
+const FILE_PATH = path.join(DATA_DIR, "events.json");
 
 // Helper to get relative offset dates (YYYY-MM-DD format based on current local time)
 function getOffsetDate(offsetDays: number): string {
@@ -30,8 +31,13 @@ function getOffsetDate(offsetDays: number): string {
   return `${year}-${month}-${day}`;
 }
 
-function initializeDB() {
-  if (!fs.existsSync(DB_PATH)) {
+function initializeFileStorage() {
+  // Ensure the folder directory exists
+  if (!fs.existsSync(DATA_DIR)) {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+  }
+
+  if (!fs.existsSync(FILE_PATH)) {
     const defaultEvents: Event[] = [
       {
         id: "event-1",
@@ -88,26 +94,27 @@ function initializeDB() {
         color: "#223843",
       },
     ];
-    fs.writeFileSync(DB_PATH, JSON.stringify(defaultEvents, null, 2), "utf-8");
+    fs.writeFileSync(FILE_PATH, JSON.stringify(defaultEvents, null, 2), "utf-8");
   }
 }
 
 function readEvents(): Event[] {
   try {
-    initializeDB();
-    const data = fs.readFileSync(DB_PATH, "utf-8");
+    initializeFileStorage();
+    const data = fs.readFileSync(FILE_PATH, "utf-8");
     return JSON.parse(data);
   } catch (err) {
-    console.error("Error reading database:", err);
+    console.error("Error reading file store:", err);
     return [];
   }
 }
 
 function writeEvents(events: Event[]) {
   try {
-    fs.writeFileSync(DB_PATH, JSON.stringify(events, null, 2), "utf-8");
+    initializeFileStorage();
+    fs.writeFileSync(FILE_PATH, JSON.stringify(events, null, 2), "utf-8");
   } catch (err) {
-    console.error("Error writing to database:", err);
+    console.error("Error writing to file store:", err);
   }
 }
 
@@ -126,8 +133,8 @@ async function startServer() {
   const PORT = 3000;
   const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
 
-  // Init DB file
-  initializeDB();
+  // Init local files storage
+  initializeFileStorage();
 
   // Socket.IO communication
   io.on("connection", (socket) => {
