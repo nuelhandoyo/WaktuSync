@@ -1,0 +1,6 @@
+{
+  "name": "WaktuSync",
+  "description": "A full-screen, real-time shared calendar and timeline display board synchronized via Socket.IO.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
